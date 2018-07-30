@@ -11,10 +11,13 @@ for config_file in $(ls $DIR/*.config); do
     echo "include-file = $config_file" >> $polybar_config_file
 done
 
-
 # kill running polybars
+
 killall -q polybar
 
-# launch polybar
+# run an instance of polybar per screen
 
-polybar main &
+for d in $(xrandr --listmonitors | awk '{print $4}'); 
+do 
+  MONITOR=$d polybar main &
+done
