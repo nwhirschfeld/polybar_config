@@ -11,10 +11,16 @@ for config_file in $(ls $DIR/*.config); do
     echo "include-file = $config_file" >> $polybar_config_file
 done
 
-
 # kill running polybars
+
 killall -q polybar
 
-# launch polybar
+# set ethernet device
 
-polybar main &
+NETDEV=$(ip a | grep mtu | grep group | cut -d: -f2 | tr -d ' ' | grep -v "vbox\|wlp\|wwp\|lo")
+# run an instance of polybar per screen
+
+for d in $(xrandr --listmonitors | awk '{print $4}'); 
+do 
+  MONITOR=$d NETDEV=$NETDEV polybar main &
+done
