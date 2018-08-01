@@ -15,9 +15,12 @@ done
 
 killall -q polybar
 
+# set ethernet device
+
+NETDEV=$(ip a | grep mtu | grep group | cut -d: -f2 | tr -d ' ' | grep -v "vbox\|wlp\|wwp\|lo")
 # run an instance of polybar per screen
 
 for d in $(xrandr --listmonitors | awk '{print $4}'); 
 do 
-  MONITOR=$d polybar main &
+  MONITOR=$d NETDEV=$NETDEV polybar main &
 done
